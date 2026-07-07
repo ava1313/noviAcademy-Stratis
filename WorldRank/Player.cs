@@ -1,14 +1,28 @@
-﻿public class Player
+namespace WorldRank;
+
+public class Player
 {
-    public int Id { get; private set; }
-    public string Name { get; set; }
+	public Guid Id { get; }
+	public string Name { get; }
+	public int Score { get; private set; }
 
-    public int Score { get; set; }
+	public Player(string name)
+	{
+		if (string.IsNullOrEmpty(name))
+			throw new ArgumentException("Name cannot be null or empty.", nameof(name));
 
-    public Player(int id, string name, int score)
-    {
-        Id=id;
-        Name = name;
-        Score = score;
-    }
+		Id = Guid.NewGuid();
+		Name = name;
+	}
+
+	public void UpdateScore(int newScore)
+	{
+		if (newScore < 0)
+			throw new ArgumentOutOfRangeException(nameof(newScore), "Score cannot be negative.");
+
+		Score = newScore;
+	}
+
+	public override string ToString() =>
+			$"[{Id}] {Name} - Score: {Score}";
 }

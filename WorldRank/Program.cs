@@ -1,80 +1,81 @@
-﻿
-List<Player> players = new List<Player>();
+using WorldRank;
 
+var players = new List<Player>();
 
-int nextId = 1;
-bool running = true;
+while (true)
+{
+	Console.WriteLine("\n=== WorldRank Player Registry ===");
+	Console.WriteLine("1. Add player");
+	Console.WriteLine("2. List all players");
+	Console.WriteLine("3. Find player by name");
+	Console.WriteLine("0. Exit");
+	Console.Write("> ");
 
+	Action? action = Console.ReadLine() switch
+	{
+		"1" => AddPlayer,
+		"2" => ListPlayers,
+		"3" => FindPlayer,
+		"0" => null,
+		_ => () => Console.WriteLine("Unknown option.")
+	};
 
+	if (action is null)
+		return; // "0" selected — exit
 
-    while (running)
-    {
-        Console.WriteLine("1. Add Player");
-        Console.WriteLine("2. Display Players");
-        Console.WriteLine("3. Find player by name");
-        Console.WriteLine("4. Exit");
-        Console.Write("Select an option: ");
-        
+	action();
+}
 
+void AddPlayer()
+{
+	Console.Write("Name: ");
+	var name = Console.ReadLine();
+	if (string.IsNullOrWhiteSpace(name))
+	{
+		Console.WriteLine("Name cannot be empty.");
+		return;
+	}
 
+	Console.Write("Score: ");
+	var scoreInput = Console.ReadLine();
+	if (!int.TryParse(scoreInput, out var score))
+	{
+		Console.WriteLine("Score must be a whole number.");
+		return;
+	}
 
-    string inputText = Console.ReadLine();
-    Console.WriteLine("");
-    
-    int input = int.Parse(inputText);
-   
-        if (input == 1)
-        {
-            Console.Write("Player name: ");
-            string name = Console.ReadLine();
+	var player = new Player(name);
+	player.UpdateScore(score);
 
-            Console.Write("Player score: ");
-            string scoreText = Console.ReadLine();
-            int score = int.Parse(scoreText);
+	players.Add(player);
+	Console.WriteLine("Player added successfully.");
+}
 
-            Player player = new Player(nextId, name, score);
-            players.Add(player);
+void ListPlayers()
+{
+	if (players.Count == 0)
+	{
+		Console.WriteLine("No players registered.");
+		return;
+	}
 
-            nextId++;
-        Console.WriteLine("===========================================");
-        Console.WriteLine("        Player added successfully.");
-        Console.WriteLine("===========================================");
+	foreach (var p in players)
+		Console.WriteLine(p);
+}
 
-        }
-        else if (input == 2)
-        {
-            Console.WriteLine("Players:");
-            foreach (var player in players)
-            {
-                Console.WriteLine("Id: " + player.Id + ", Name: " + player.Name + ", Score: " + player.Score);
-            }
-        }
-            else if (input == 3)
-        {
-            Console.Write("Enter player name to search: ");
-            string searchName = Console.ReadLine();
-            var foundPlayer = players.FirstOrDefault(p => p.Name.Equals(searchName, StringComparison.OrdinalIgnoreCase));
-            if (foundPlayer != null)
-            {
-            Console.WriteLine("===========================================");
-            Console.WriteLine("Found Player - Id: " + foundPlayer.Id + ", Name: " + foundPlayer.Name + ", Score: " + foundPlayer.Score);
-            Console.WriteLine("===========================================");
+void FindPlayer()
+{
+	Console.Write("Search by name: ");
+	var term = Console.ReadLine() ?? string.Empty;
 
-        }
-            else
-            {
-             Console.WriteLine("===========================================");
-             Console.WriteLine("             Player not found.");
-             Console.WriteLine("===========================================");
+	var player = players
+			.FirstOrDefault(p => p.Name.Equals(term, StringComparison.OrdinalIgnoreCase));
 
-        }
-    }
-        else if (input == 4)
-        {
-            running = false;
-        }
-        else
-        {
-            Console.WriteLine("Invalid option. Please try again.");
-        }
-    }
+	if (player is null)
+	{
+		Console.WriteLine("No player found.");
+		return;
+	}
+
+	Console.WriteLine(player);
+}
