@@ -1,4 +1,6 @@
-namespace WorldRank;
+using WorldRank.Interfaces;
+
+namespace WorldRank.Classes;
 
 
 public class InMemoryWalletRepository : IWalletRepository

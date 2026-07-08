@@ -1,4 +1,6 @@
-namespace WorldRank;
+using WorldRank.Classes;
+
+namespace WorldRank.Interfaces;
 
 public interface IPlayerRepository
 {
