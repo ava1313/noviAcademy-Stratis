@@ -1,10 +1,14 @@
-using WorldRank;
+using WorldRank.Classes;
+using WorldRank.Enum;
+using WorldRank.Interfaces;
 
 IPlayerRepository playerRepository = new InMemoryPlayerRepository();
 IWalletRepository walletRepository = new InMemoryWalletRepository();
-
+ILogger logger = new ConsoleLogger();
+logger.LogInfo("Application started.");
 while (true)
 {
+    
     Console.WriteLine("\n=== WorldRank Player Registry ===");
     Console.WriteLine("1. Add player");
     Console.WriteLine("2. List players by score");
@@ -48,6 +52,7 @@ void AddPlayer()
 
     if (string.IsNullOrWhiteSpace(name))
     {
+        logger.LogWarning("User entered empty player name.");
         Console.WriteLine("Name cannot be empty.");
         return;
     }
@@ -55,6 +60,7 @@ void AddPlayer()
     Console.Write("Score: ");
     if (!int.TryParse(Console.ReadLine(), out int score))
     {
+        logger.LogWarning("Invalid score entered.");
         Console.WriteLine("Score must be a number.");
         return;
     }
@@ -63,7 +69,6 @@ void AddPlayer()
     player.UpdateScore(score);
 
     playerRepository.AddPlayer(player);
-
     Console.WriteLine($"Player added. ID: {player.Id}");
 }
 
@@ -86,8 +91,11 @@ void FindPlayer()
 {
     Console.Write("Player ID: ");
 
-    if (!int.TryParse(Console.ReadLine(), out int playerId))
+    string? input = Console.ReadLine();
+
+    if (!int.TryParse(input, out int playerId))
     {
+        logger.LogWarning($"Invalid player id input: {input}");
         Console.WriteLine("Invalid ID.");
         return;
     }
@@ -99,25 +107,60 @@ void FindPlayer()
         Console.WriteLine("Player not found.");
         return;
     }
-
+    
     Console.WriteLine(player);
+
 }
 
 void DeletePlayer()
 {
-    Console.Write("Player ID: ");
+    var groupedPlayers = playerRepository.GroupPlayersByScore();
 
-    if (!int.TryParse(Console.ReadLine(), out int playerId))
+    var players = groupedPlayers
+        .SelectMany(group => group)
+        .OrderBy(p => p.Id)
+        .ToList();
+
+    if (!players.Any())
+    {
+        Console.WriteLine("There are no players to delete.");
+        return;
+    }
+
+    Console.WriteLine("=== Players ===");
+
+    foreach (var player in players)
+    {
+        Console.WriteLine(player);
+    }
+
+    Console.Write("Enter Player ID to delete: ");
+    string? input = Console.ReadLine();
+
+    if (!int.TryParse(input, out int playerId) || playerId <= 0)
     {
         Console.WriteLine("Invalid ID.");
         return;
     }
 
+    Player? playerToDelete = playerRepository.FindPlayer(playerId);
+
+    if (playerToDelete == null)
+    {
+        logger.LogWarning($"Delete failed. Player {playerId} not found.");
+        Console.WriteLine("Player not found.");
+        return;
+    }
+
+
     bool deleted = playerRepository.DeletePlayer(playerId);
 
-    Console.WriteLine(deleted ? "Player deleted." : "Player not found.");
+    if (deleted)
+    {
+        logger.LogInfo($"Player {playerId} deleted.");
+        Console.WriteLine("Player deleted.");
+    }
 }
-
 void AddWallet()
 {
     Console.Write("Player ID: ");
@@ -157,11 +200,14 @@ void AddWallet()
     try
     {
         walletRepository.Add(wallet, playerId);
+        logger.LogInfo($"Wallet {selectedCurrency} created for player {playerId}");
         Console.WriteLine("Wallet added.");
     }
     catch (Exception ex)
     {
+        logger.LogError("Wallet creation failed.", ex);
         Console.WriteLine(ex.Message);
+
     }
 }
 
@@ -207,10 +253,12 @@ void DepositToWallet()
     try
     {
         wallet.Deposit(amount);
+        logger.LogInfo($"Deposit of {amount} to wallet {wallet.Id}");
         Console.WriteLine("Deposit completed.");
     }
     catch (Exception ex)
     {
+        logger.LogError("Deposit failed.", ex);
         Console.WriteLine(ex.Message);
     }
 }
@@ -232,11 +280,14 @@ void WithdrawFromWallet()
 
     try
     {
+
         wallet.Withdraw(amount);
+        logger.LogInfo($"Withdraw {amount} from wallet {wallet.Id}");
         Console.WriteLine("Withdraw completed.");
     }
     catch (Exception ex)
     {
+        logger.LogError("Withdraw failed.", ex);
         Console.WriteLine(ex.Message);
     }
 }

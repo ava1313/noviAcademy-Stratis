@@ -1,4 +1,4 @@
-namespace WorldRank;
+namespace WorldRank.Enum;
 
 public enum Currency
 {

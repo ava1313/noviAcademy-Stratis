@@ -1,4 +1,8 @@
-namespace WorldRank;
+using WorldRank.Enum;
+using WorldRank.Exceptions;
+using WorldRank.Interfaces;
+using WorldRank.Exceptions;
+namespace WorldRank.Classes;
 
 public class Wallet
 {
@@ -37,7 +41,7 @@ public class Wallet
                 "Withdrawal amount must be positive.");
 
         if (amount > Balance)
-            throw new InvalidOperationException("Insufficient funds.");
+            throw new InsufficientFundsException(Balance, amount);
 
         Balance -= amount;
     }
