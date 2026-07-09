@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WorldRank.Domain\WorldRank.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
