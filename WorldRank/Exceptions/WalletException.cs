@@ -1,13 +1,12 @@
-namespace WorldRank.Console.Exceptions
-{
-	public abstract class WalletException : Exception
-	{
-		protected WalletException(string message) : base(message)
-		{
-		}
+namespace WorldRank.Console.Exceptions;
 
-		protected WalletException(string message, Exception innerException) : base(message, innerException)
-		{
-		}
+public abstract class WalletException : Exception
+{
+	protected WalletException(string message) : base(message)
+	{
+	}
+
+	protected WalletException(string message, Exception innerException) : base(message, innerException)
+	{
 	}
 }
