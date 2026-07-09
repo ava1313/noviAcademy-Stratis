@@ -1,4 +1,6 @@
-﻿namespace WorldRank.Console
+﻿using WorldRank.Domain;
+
+namespace WorldRank.Console
 {
 	public interface IPlayerRepository
 	{
