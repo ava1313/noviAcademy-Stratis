@@ -4,4 +4,8 @@
   <Project Path="src/WorldRank.Domain/WorldRank.Domain.csproj" />
   <Project Path="src/WorldRank.Infrastructure/WorldRank.Infrastructure.csproj" />
   <Project Path="WorldRank.API/WorldRank.API.csproj" Id="03c80f48-808a-4720-b660-ddb5e10fea17" />
+  <Project Path="NoviCode.Api/NoviCode.Api.csproj" />
+  <Project Path="NoviCode.Application/NoviCode.Application.csproj" />
+  <Project Path="NoviCode.Domain/NoviCode.Domain.csproj" />
+  <Project Path="NoviCode.Infrastructure/NoviCode.Infrastructure.csproj" />
 </Solution>
