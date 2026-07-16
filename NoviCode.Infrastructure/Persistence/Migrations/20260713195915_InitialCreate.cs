@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace NoviCode.Migrations
+namespace NoviCode.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -37,17 +37,29 @@ namespace NoviCode.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Wallets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Wallets_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_PlayerId_Currency",
+                table: "Wallets",
+                columns: new[] { "PlayerId", "Currency" },
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Players");
+                name: "Wallets");
 
             migrationBuilder.DropTable(
-                name: "Wallets");
+                name: "Players");
         }
     }
 }

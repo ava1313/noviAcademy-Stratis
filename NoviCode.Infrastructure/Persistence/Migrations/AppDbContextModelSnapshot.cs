@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NoviCode;
+using NoviCode.Persistence.Context;
 
 #nullable disable
 
-namespace NoviCode.Migrations
+namespace NoviCode.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -64,7 +64,19 @@ namespace NoviCode.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PlayerId", "Currency")
+                        .IsUnique();
+
                     b.ToTable("Wallets", (string)null);
+                });
+
+            modelBuilder.Entity("NoviCode.Wallet", b =>
+                {
+                    b.HasOne("NoviCode.Player", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
