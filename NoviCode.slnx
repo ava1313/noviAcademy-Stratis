@@ -3,4 +3,5 @@
   <Project Path="NoviCode.Application/NoviCode.Application.csproj" />
   <Project Path="NoviCode.Domain/NoviCode.Domain.csproj" />
   <Project Path="NoviCode.Infrastructure/NoviCode.Infrastructure.csproj" />
+  <Project Path="WorldRank.tests/WorldRank.tests.vbproj" Id="750c1557-6097-4f01-b61d-5bb5b8166273" />
 </Solution>
